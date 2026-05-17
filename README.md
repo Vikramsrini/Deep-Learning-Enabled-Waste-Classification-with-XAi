@@ -17,15 +17,36 @@ The deliverables are organized into:
 
 # Dataset Information
 
-The repository does not contain raw dataset files. The notebooks expect an image dataset arranged using class-wise folders under train/validation/test directories.
+The experiments use the **TrashNeXt dataset** [30], which is specifically designed for automatic waste-material classification.
 
-Typical expected paths in notebooks:
+- **Total images:** 23,625 RGB images
+- **Classes (9):** Cardboard, E-Waste, Foam Rubber, Glass, Medical, Metal, Organic, Paper, Plastic
+- The classes cover household, industrial, and institutional waste streams, including recyclable and non-recyclable materials.
 
-- `/content/dataset/Train`
-- `/content/dataset/Valid`
-- `/content/dataset/Test`
+The dataset is pre-divided into three non-overlapping, independently sampled splits:
 
-Some scripts in the optimization track also expect precomputed NumPy arrays (`X_train.npy`, `y_train.npy`, `X_valid.npy`, `y_valid.npy`) when using ClearML-based workflows.
+- **Train:** 18,898 images (80%)
+- **Validation:** 2,363 images (10%)
+- **Test:** 2,364 images (10%)
+
+This split design preserves class representation reasonably well and prevents data leakage between training, hyperparameter optimization, and final evaluation.
+
+### TrashNeXt Dataset — Class-Level Image Distribution Across Splits
+
+| Waste Class | Train | Validation | Test | Category Type |
+|---|---:|---:|---:|---|
+| Cardboard | 1,886 | 236 | 235 | Recyclable / Dry |
+| E-Waste | 2,404 | 301 | 301 | Hazardous / Electronic |
+| Foam Rubber | 2,289 | 287 | 287 | Non-Recyclable / Soft |
+| Glass | 2,009 | 251 | 252 | Recyclable / Rigid |
+| Medical | 1,565 | 196 | 196 | Hazardous / Regulated |
+| Metal | 2,065 | 258 | 258 | Recyclable / Rigid |
+| Organic | 2,391 | 299 | 299 | Compostable / Biodegradable |
+| Paper | 2,155 | 269 | 270 | Recyclable / Dry |
+| Plastic | 2,135 | 267 | 267 | Recyclable / Flexible/Rigid |
+| **TOTAL** | **18,898** | **2,363** | **2,364** | **23,625 total images** |
+
+The dataset shows **moderate class imbalance**: E-Waste and Organic have the highest sample counts, while Medical has the lowest. This supports using weighted and macro-aware evaluation metrics (e.g., macro F1-score and weighted AUROC) rather than relying only on plain accuracy.
 
 # Code Information
 
