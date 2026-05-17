@@ -1,157 +1,111 @@
 # Title
 
-King Faisal Research Paper Code Submission
+deep learning enabled waste classification with xai
 
 # Description
 
-This repository contains the hybrid-model code used for the research submission centered on:
+This repository contains code for two hybrid waste-classification models and their analysis tracks:
 
 - EfficientNetV2-S + LeViT-256 + XGBoost
 - EfficientNetV2-S + Swin-Base + XGBoost
 
-The available files include:
+The deliverables are organized into:
 
-- `efficientnetv2s_levit256_xgboost_explainable_ai.ipynb`
-  LeViT-based hybrid pipeline with model analysis, evaluation metrics, and SHAP-based explainable AI.
-- `efficientnetv2s_swinbase_xgboost_optuna.ipynb`
-  Swin-Base hybrid pipeline with feature extraction, evaluation, and Optuna-based XGBoost hyperparameter optimization.
-- `xgboost_optimizer.py`
-  Standalone XGBoost optimization/training script.
-- `launch_hpo.py`
-  Hyperparameter optimization launcher using ClearML Optuna automation.
+1. Without optimization including analysis
+2. With optimization including analysis
+3. Explainable AI only
 
 # Dataset Information
 
-The repository does not include the raw dataset files themselves. The notebooks expect an image-classification dataset arranged in folder-based train/validation/test splits.
+The repository does not contain raw dataset files. The notebooks expect an image dataset arranged using class-wise folders under train/validation/test directories.
 
-Observed dataset assumptions from the code:
+Typical expected paths in notebooks:
 
-- LeViT notebook paths:
-  - `/content/dataset/Train`
-  - `/content/dataset/Valid`
-  - `/content/dataset/Test`
-- Swin notebook paths:
-  - image folders loaded through `torchvision.datasets.ImageFolder`
-- `xgboost_optimizer.py` expects precomputed NumPy feature arrays from a ClearML dataset:
-  - `X_train.npy`
-  - `y_train.npy`
-  - `X_valid.npy`
-  - `y_valid.npy`
+- `/content/dataset/Train`
+- `/content/dataset/Valid`
+- `/content/dataset/Test`
 
-The code also includes dataset-cleaning steps for hidden files and corrupted/truncated images in the LeViT notebook.
+Some scripts in the optimization track also expect precomputed NumPy arrays (`X_train.npy`, `y_train.npy`, `X_valid.npy`, `y_valid.npy`) when using ClearML-based workflows.
 
 # Code Information
 
-Main code components:
+## 1) Without optimization including analysis
 
-1. `efficientnetv2s_levit256_xgboost_explainable_ai.ipynb`
-   - Uses EfficientNetV2-S and LeViT-256 for hybrid feature extraction
-   - Trains an XGBoost classifier on extracted features
-   - Reports metrics such as classification report, confusion matrix, log loss, and weighted AUROC
-   - Includes SHAP-based explainable AI workflow
+- `1_without_optimization_including_analysis/efficientnetv2s_levit256_xgboost_without_optimization_with_analysis.ipynb`
+- `1_without_optimization_including_analysis/efficientnetv2s_swinbase_xgboost_without_optimization_with_analysis.ipynb`
 
-2. `efficientnetv2s_swinbase_xgboost_optuna.ipynb`
-   - Uses EfficientNetV2-S and Swin-Base for hybrid feature extraction
-   - Trains and tunes XGBoost using Optuna
-   - Produces optimization results and final performance analysis
+## 2) With optimization including analysis
 
-3. `xgboost_optimizer.py`
-   - Loads feature arrays from ClearML dataset storage
-   - Trains XGBoost and evaluates validation accuracy
+- `2_with_optimization_including_analysis/efficientnetv2s_levit256_xgboost_best_available_with_analysis.ipynb`
+- `2_with_optimization_including_analysis/efficientnetv2s_swinbase_xgboost_optuna_with_analysis.ipynb`
+- `2_with_optimization_including_analysis/xgboost_optimizer.py`
+- `2_with_optimization_including_analysis/launch_hpo.py`
 
-4. `launch_hpo.py`
-   - Launches Optuna-based HPO through ClearML automation
+## 3) Explainable AI only
+
+- `3_explainable_ai_only/efficientnetv2s_levit256_xgboost_explainable_ai.ipynb`
+- `3_explainable_ai_only/efficientnetv2s_swinbase_xgboost_explainable_ai.ipynb`
 
 # Usage Instructions
 
-## To use the notebooks
+1. Prepare the dataset in class-wise train/validation/test folders.
+2. Open the needed notebook in Jupyter Notebook or Google Colab.
+3. Update dataset paths if your environment differs.
+4. Install required Python dependencies.
+5. Run notebook cells in order to perform feature extraction, XGBoost training/tuning, evaluation, and explainability where applicable.
 
-1. Prepare the dataset in train/validation/test folder structure.
-2. Open the required notebook in Jupyter or Google Colab.
-3. Update dataset paths if needed.
-4. Install the required dependencies listed below.
-5. Run cells in order:
-   - dataset preparation / cleaning
-   - feature extraction
-   - XGBoost training or optimization
-   - evaluation and analysis
-   - SHAP/XAI cells if using the LeViT notebook
-
-## To use the Python scripts
-
-1. Configure ClearML access if using `launch_hpo.py` or `xgboost_optimizer.py`.
-2. Ensure the referenced ClearML dataset exists and contains the expected `.npy` files.
-3. Run:
+For optimization scripts:
 
 ```bash
-python xgboost_optimizer.py
-python launch_hpo.py
+python 2_with_optimization_including_analysis/xgboost_optimizer.py
+python 2_with_optimization_including_analysis/launch_hpo.py
 ```
 
 # Requirements
 
-The codebase references the following main dependencies:
+Main dependencies used across the notebooks/scripts:
 
 - Python 3.x
-- `torch`
-- `torchvision`
-- `timm`
-- `numpy`
-- `pandas`
-- `xgboost`
-- `scikit-learn`
-- `matplotlib`
-- `shap`
-- `optuna`
-- `clearml`
-- `transformers`
-- `datasets`
-- `accelerate`
-- `Pillow`
+- torch
+- torchvision
+- timm
+- numpy
+- pandas
+- xgboost
+- scikit-learn
+- matplotlib
+- shap
+- optuna
+- clearml
+- Pillow
 
-A typical install command would be:
+Example install:
 
 ```bash
-pip install torch torchvision timm numpy pandas xgboost scikit-learn matplotlib shap optuna clearml transformers datasets accelerate pillow
+pip install torch torchvision timm numpy pandas xgboost scikit-learn matplotlib shap optuna clearml pillow
 ```
 
 # Methodology
 
-The general methodology used in the notebooks is:
-
-1. Load and clean the image dataset.
-2. Apply preprocessing and transforms.
-3. Use pretrained vision backbones to extract hybrid features:
-   - EfficientNetV2-S + LeViT-256
-   - EfficientNetV2-S + Swin-Base
-4. Concatenate extracted features.
-5. Train an XGBoost classifier on the combined features.
-6. Evaluate model performance on validation and/or test data.
-7. For the Swin-based workflow, perform Optuna-based hyperparameter optimization.
-8. For the LeViT-based workflow, generate SHAP-based explainability outputs.
+1. Load and preprocess waste image data.
+2. Extract features from EfficientNetV2-S and either LeViT-256 or Swin-Base.
+3. Concatenate hybrid features.
+4. Train XGBoost classifier.
+5. Evaluate with classification metrics and analysis plots.
+6. In optimization track, run hyperparameter optimization workflows.
+7. In explainable AI track, use SHAP-based interpretation.
 
 # Citations
 
-If this code or dataset is used in research, cite the relevant research paper, notebook results, and the external model/framework sources where appropriate.
+If used in research, cite the project/paper and major frameworks:
 
-Suggested items to cite where relevant:
-
-- The associated King Faisal research paper
 - XGBoost
 - Optuna
 - SHAP
 - PyTorch
-- TIMM pretrained model library
+- TIMM
 
 # License & Contribution Guidelines
 
-License:
-
-- This repository is licensed under the MIT License.
-- See the [LICENSE](LICENSE) file for the full text.
-
-Contribution Guidelines:
-
-- Keep the code focused on approved research deliverables.
-- Preserve notebook execution order and document any dataset path changes.
-- If adding new experiments, separate them clearly from final submission files.
+- License: MIT (see `LICENSE`).
+- Contributions should keep the repository focused on the two requested hybrid models and the three deliverable tracks.
