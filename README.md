@@ -22,23 +22,44 @@ The available files include:
 
 # Dataset Information
 
-The repository does not include the raw dataset files themselves. The notebooks expect an image-classification dataset arranged in folder-based train/validation/test splits.
+The experiments use the TrashNeXt dataset, which is explicitly designed for automatic waste-material classification. TrashNeXt contains 23,625 RGB images across nine semantically distinct classes:
 
-Observed dataset assumptions from the code:
+- Cardboard
+- E-Waste
+- Foam Rubber
+- Glass
+- Medical
+- Metal
+- Organic
+- Paper
+- Plastic
 
-- LeViT notebook paths:
-  - `/content/dataset/Train`
-  - `/content/dataset/Valid`
-  - `/content/dataset/Test`
-- Swin notebook paths:
-  - image folders loaded through `torchvision.datasets.ImageFolder`
-- `xgboost_optimizer.py` expects precomputed NumPy feature arrays from a ClearML dataset:
-  - `X_train.npy`
-  - `y_train.npy`
-  - `X_valid.npy`
-  - `y_valid.npy`
+These categories represent typical household, industrial, and institutional waste streams, including recyclable and non-recyclable material types with practical sorting requirements.
 
-The code also includes dataset-cleaning steps for hidden files and corrupted/truncated images in the LeViT notebook.
+The dataset is pre-divided into three non-overlapping and independently sampled splits:
+
+- Training: 18,898 images (80.0%)
+- Validation: 2,363 images (10.0%)
+- Test: 2,364 images (10.0%)
+
+This stratified split preserves class representation across splits, and no image appears in more than one split, reducing data leakage risk between training, hyperparameter optimization, and final evaluation.
+
+### TrashNeXt Dataset — Class-Level Image Distribution Across Splits
+
+| Waste Class | Train | Validation | Test | Category Type |
+| --- | ---: | ---: | ---: | --- |
+| Cardboard | 1,886 | 236 | 235 | Recyclable / Dry |
+| E-Waste | 2,404 | 301 | 301 | Hazardous / Electronic |
+| Foam Rubber | 2,289 | 287 | 287 | Non-Recyclable / Soft |
+| Glass | 2,009 | 251 | 252 | Recyclable / Rigid |
+| Medical | 1,565 | 196 | 196 | Hazardous / Regulated |
+| Metal | 2,065 | 258 | 258 | Recyclable / Rigid |
+| Organic | 2,391 | 299 | 299 | Compostable / Biodegradable |
+| Paper | 2,155 | 269 | 270 | Recyclable / Dry |
+| Plastic | 2,135 | 267 | 267 | Recyclable / Flexible/Rigid |
+| **TOTAL** | **18,898** | **2,363** | **2,364** | **23,625 total images** |
+
+The dataset is moderately imbalanced, with E-Waste and Organic having the highest sample counts and Medical the lowest. This motivates prioritizing weighted metrics such as macro F1-score and weighted AUROC instead of relying only on plain accuracy.
 
 # Code Information
 
