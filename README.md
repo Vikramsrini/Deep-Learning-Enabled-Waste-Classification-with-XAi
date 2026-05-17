@@ -1,6 +1,6 @@
 # Title
 
-King Faisal Research Paper Code Submission
+Deep Learning Enabled Waste Classification with XAi 
 
 # Description
 
